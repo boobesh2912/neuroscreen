@@ -27,7 +27,7 @@ function AppShell({ user, onLogout, title, subtitle, children }) {
           <Link to="/dashboard" className="flex items-center gap-2">
             <ShieldCheck className="h-7 w-7 text-[var(--brand-700)]" />
             <div>
-              <p className="font-display text-xl font-bold tracking-tight text-[var(--ink-900)]">MediGuardian</p>
+              <p className="font-display text-xl font-bold tracking-tight text-[var(--ink-900)]">NeuroScreen</p>
               <p className="text-xs text-[var(--ink-600)]">Voice Intelligence Platform</p>
             </div>
           </Link>

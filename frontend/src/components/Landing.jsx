@@ -45,13 +45,13 @@ const Landing = () => {
 
       <section className="mx-auto grid max-w-7xl gap-4 px-4 pb-16 sm:grid-cols-3 sm:px-6 lg:px-8">
         {[
-          ['12,000+', 'Screenings completed'],
-          ['94%', 'Model benchmark accuracy'],
-          ['<30s', 'Average analysis latency'],
-        ].map(([stat, label]) => (
-          <div key={stat} className="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-5 shadow-soft">
-            <p className="font-display text-3xl font-bold">{stat}</p>
-            <p className="text-sm text-[var(--ink-700)]">{label}</p>
+          ['Guided Capture', 'Standardized audio collection flow'],
+          ['Risk Tracking', 'Longitudinal trend visibility'],
+          ['Clinical Handoff', 'Specialist-ready summary outputs'],
+        ].map(([title, label]) => (
+          <div key={title} className="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-5 shadow-soft">
+            <p className="font-display text-2xl font-bold">{title}</p>
+            <p className="mt-1 text-sm text-[var(--ink-700)]">{label}</p>
           </div>
         ))}
       </section>

@@ -12,7 +12,7 @@ const About = () => (
           Building a calmer first step for neurological screening
         </h1>
         <p className="mt-4 max-w-3xl text-base text-[var(--ink-700)] sm:text-lg">
-          MediGuardian helps people run structured voice checks at home and share trends with clinicians. We focus on early risk indication,
+          NeuroScreen helps people run structured voice checks at home and share trends with clinicians. We focus on early risk indication,
           repeatability, and clarity so users can act sooner with better information.
         </p>
       </div>
@@ -119,7 +119,7 @@ const About = () => (
       <div className="mt-10 rounded-2xl border border-[var(--line)] bg-[var(--brand-100)]/55 p-6 sm:p-8">
         <h2 className="font-display text-2xl font-bold">Clinical Disclaimer</h2>
         <p className="mt-2 text-sm text-[var(--ink-700)] sm:text-base">
-          MediGuardian is a screening support system. It does not diagnose disease, replace licensed medical advice, or substitute for professional
+          NeuroScreen is a screening support system. It does not diagnose disease, replace licensed medical advice, or substitute for professional
           neurological evaluation.
         </p>
       </div>

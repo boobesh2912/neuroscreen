@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Loader2, ShieldCheck } from 'lucide-react';
-import { authAPI } from '../api';
+import { authAPI, getApiErrorMessage } from '../api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -42,13 +42,7 @@ const Register = () => {
       await authAPI.register(registerData);
       navigate('/login', { state: { message: 'Registration successful. Please sign in.' } });
     } catch (err) {
-      if (err.response?.data?.error) {
-        setError(err.response.data.error);
-      } else if (err.code === 'ERR_NETWORK') {
-        setError('Cannot reach backend API. Make sure backend is running on http://localhost:5000.');
-      } else {
-        setError('Registration failed. Please try again.');
-      }
+      setError(getApiErrorMessage(err, 'Registration failed. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -60,13 +54,13 @@ const Register = () => {
         <div className="mb-8 flex items-center gap-2">
           <ShieldCheck className="h-7 w-7 text-[var(--brand-700)]" />
           <div>
-            <p className="font-display text-2xl font-bold text-[var(--ink-900)]">MediGuardian</p>
+            <p className="font-display text-2xl font-bold text-[var(--ink-900)]">NeuroScreen</p>
             <p className="text-xs text-[var(--ink-600)]">Create your clinical screening workspace</p>
           </div>
         </div>
 
         <h1 className="font-display text-3xl font-bold text-[var(--ink-900)]">Create Account</h1>
-        <p className="mt-2 text-sm text-[var(--ink-700)]">Setup your identity profile for longitudinal voice health tracking.</p>
+        <p className="mt-2 text-sm text-[var(--ink-700)]">Set up your identity profile for longitudinal voice health tracking.</p>
 
         {error && <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div>}
 

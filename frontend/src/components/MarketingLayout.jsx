@@ -18,7 +18,7 @@ function MarketingLayout({ children }) {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-2">
             <ShieldCheck className="h-7 w-7 text-[var(--brand-700)]" />
-            <span className="font-display text-2xl font-bold">MediGuardian</span>
+            <span className="font-display text-2xl font-bold">NeuroScreen</span>
           </Link>
 
           <nav className="hidden items-center gap-4 md:flex">
@@ -40,7 +40,7 @@ function MarketingLayout({ children }) {
 
       <footer className="border-t border-[var(--line)] bg-[var(--panel)] px-4 py-8 text-[var(--ink-700)]">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <p className="text-sm">MediGuardian 2026. Voice screening support for early Parkinson's risk detection. By Digital Duo.</p>
+          <p className="text-sm">NeuroScreen 2026. Voice screening support for early Parkinson's risk detection. By Digital Duo.</p>
           <div className="flex flex-wrap gap-4 text-sm font-semibold">
             <Link to="/about" className="hover:text-[var(--ink-900)]">About</Link>
             <Link to="/how-it-works" className="hover:text-[var(--ink-900)]">How It Works</Link>

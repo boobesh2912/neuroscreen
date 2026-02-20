@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Loader2, ShieldCheck } from 'lucide-react';
-import { authAPI } from '../api';
+import { authAPI, getApiErrorMessage } from '../api';
 
 const Login = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const Login = ({ onLogin }) => {
       onLogin(token, user);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+      setError(getApiErrorMessage(err, 'Login failed. Please check your credentials.'));
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ const Login = ({ onLogin }) => {
         <aside className="hidden border-r border-[var(--line)] bg-[var(--bg-2)] p-10 lg:block">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-7 w-7 text-[var(--brand-700)]" />
-            <span className="font-display text-2xl font-bold text-[var(--ink-900)]">MediGuardian</span>
+            <span className="font-display text-2xl font-bold text-[var(--ink-900)]">NeuroScreen</span>
           </div>
           <h1 className="mt-6 font-display text-4xl font-bold leading-tight text-[var(--ink-900)]">Welcome back to your screening workspace.</h1>
           <p className="mt-4 text-sm text-[var(--ink-700)]">Securely access dashboard analytics, voice testing, and emergency contact management.</p>
@@ -46,7 +46,7 @@ const Login = ({ onLogin }) => {
           <div className="mb-6 lg:hidden">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-7 w-7 text-[var(--brand-700)]" />
-              <span className="font-display text-2xl font-bold text-[var(--ink-900)]">MediGuardian</span>
+              <span className="font-display text-2xl font-bold text-[var(--ink-900)]">NeuroScreen</span>
             </div>
           </div>
 
@@ -71,7 +71,7 @@ const Login = ({ onLogin }) => {
           </form>
 
           <p className="mt-5 text-sm text-[var(--ink-700)]">
-            New to MediGuardian?{' '}
+            New to NeuroScreen?{' '}
             <Link to="/register" className="font-semibold text-[var(--brand-700)]">Create account</Link>
           </p>
           <Link to="/" className="mt-2 inline-block text-sm text-[var(--ink-600)] hover:text-[var(--ink-900)]">Back to landing</Link>
