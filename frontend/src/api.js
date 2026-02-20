@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_ROOT_URL = import.meta.env.VITE_API_ROOT_URL || 'http://localhost:5000';
-const API_BASE_URL = `${API_ROOT_URL}/api`;
+const API_ROOT_URL = (import.meta.env.VITE_API_ROOT_URL || '').trim().replace(/\/$/, '');
+const API_BASE_URL = API_ROOT_URL ? `${API_ROOT_URL}/api` : '/api';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -106,7 +106,23 @@ export const bookingAPI = {
 export const getImageUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  return `${API_ROOT_URL}${path}`;
+  return API_ROOT_URL ? `${API_ROOT_URL}${path}` : path;
+};
+
+export const getApiErrorMessage = (error, fallbackMessage = 'Request failed. Please try again.') => {
+  if (error?.response?.data?.error) {
+    return error.response.data.error;
+  }
+
+  if (error?.code === 'ERR_NETWORK' || error?.code === 'ECONNREFUSED') {
+    return 'Cannot reach backend API. Check your VITE_API_ROOT_URL configuration and backend status.';
+  }
+
+  if (error?.response?.status === 503) {
+    return 'Service is temporarily unavailable. Please try again shortly.';
+  }
+
+  return fallbackMessage;
 };
 
 export default api;

@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { AlertCircle, CheckCircle2, Loader2, Mic, Square, UploadCloud, Calendar } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, Mic, Square, UploadCloud, Calendar, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AppShell from './AppShell';
-import { analysisAPI, getImageUrl } from '../api';
+import { analysisAPI, getApiErrorMessage, getImageUrl } from '../api';
 
 const panelClass = 'rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-5 shadow-soft';
+const metricHelp = {
+  jitter: 'Jitter means tiny pitch wobble in your voice. Higher values can mean less stable vocal cord vibration.',
+  shimmer: 'Shimmer means tiny loudness wobble in your voice. Higher values can mean weaker or unstable voice control.',
+  hnr: 'HNR shows how clear your voice is compared to noise. Higher is usually cleaner; lower can mean breathy or hoarse voice.',
+  f0: 'F0 Mean is your average voice pitch in Hertz (Hz). It helps us track voice control and tone changes.',
+};
 
 function riskTone(score) {
   if (score < 30) return { badge: 'Low Concern', text: 'text-emerald-700', bg: 'bg-emerald-100' };
@@ -103,7 +109,7 @@ const TestPage = ({ user, onLogout }) => {
       };
       setResult(normalized);
     } catch (err) {
-      setError(err.response?.data?.error || 'Analysis failed. Please try again.');
+      setError(getApiErrorMessage(err, 'Analysis failed. Please try again.'));
     } finally {
       setIsAnalyzing(false);
     }
@@ -235,10 +241,42 @@ const TestPage = ({ user, onLogout }) => {
           )}
 
           <section className="grid gap-4 md:grid-cols-4">
-            <div className={panelClass}><p className="text-xs text-[var(--ink-600)]">Jitter</p><p className="font-display text-2xl font-bold">{Number(features.jitter_relative || 0).toFixed(4)}</p></div>
-            <div className={panelClass}><p className="text-xs text-[var(--ink-600)]">Shimmer</p><p className="font-display text-2xl font-bold">{Number(features.shimmer_relative || 0).toFixed(4)}</p></div>
-            <div className={panelClass}><p className="text-xs text-[var(--ink-600)]">HNR (dB)</p><p className="font-display text-2xl font-bold">{Number(features.hnr || 0).toFixed(2)}</p></div>
-            <div className={panelClass}><p className="text-xs text-[var(--ink-600)]">F0 Mean (Hz)</p><p className="font-display text-2xl font-bold">{Number(features.f0_mean || 0).toFixed(1)}</p></div>
+            <div className={panelClass}>
+              <div className="flex items-center gap-1">
+                <p className="text-xs text-[var(--ink-600)]">Jitter</p>
+                <button type="button" title={metricHelp.jitter} className="text-[var(--ink-500)]" aria-label="What is Jitter?">
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <p className="font-display text-2xl font-bold">{Number(features.jitter_relative || 0).toFixed(4)}</p>
+            </div>
+            <div className={panelClass}>
+              <div className="flex items-center gap-1">
+                <p className="text-xs text-[var(--ink-600)]">Shimmer</p>
+                <button type="button" title={metricHelp.shimmer} className="text-[var(--ink-500)]" aria-label="What is Shimmer?">
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <p className="font-display text-2xl font-bold">{Number(features.shimmer_relative || 0).toFixed(4)}</p>
+            </div>
+            <div className={panelClass}>
+              <div className="flex items-center gap-1">
+                <p className="text-xs text-[var(--ink-600)]">HNR (dB)</p>
+                <button type="button" title={metricHelp.hnr} className="text-[var(--ink-500)]" aria-label="What is HNR?">
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <p className="font-display text-2xl font-bold">{Number(features.hnr || 0).toFixed(2)}</p>
+            </div>
+            <div className={panelClass}>
+              <div className="flex items-center gap-1">
+                <p className="text-xs text-[var(--ink-600)]">F0 Mean (Hz)</p>
+                <button type="button" title={metricHelp.f0} className="text-[var(--ink-500)]" aria-label="What is F0 Mean?">
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <p className="font-display text-2xl font-bold">{Number(features.f0_mean || 0).toFixed(1)}</p>
+            </div>
           </section>
 
           <section className="grid gap-4 md:grid-cols-2">
@@ -287,7 +325,7 @@ const TestPage = ({ user, onLogout }) => {
             </ul>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <button onClick={resetTest} className="rounded-full border border-[var(--line)] bg-white px-5 py-2 text-sm font-semibold">Run New Test</button>
-              <button onClick={() => (window.location.href = '/dashboard')} className="rounded-full bg-[var(--ink-900)] px-5 py-2 text-sm font-semibold text-white">Back to Overview</button>
+              <button onClick={() => navigate('/dashboard')} className="rounded-full bg-[var(--ink-900)] px-5 py-2 text-sm font-semibold text-white">Back to Overview</button>
               {result.risk_score >= 50 && (
                 <button onClick={() => navigate('/bookings')} className="rounded-full bg-[var(--brand-700)] px-5 py-2 text-sm font-semibold text-white hover:bg-[var(--brand-800)]">
                   Find a Doctor

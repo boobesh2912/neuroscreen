@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import AppShell from './AppShell';
-import { Calendar, Clock, MapPin, Star, Phone, Mail, Award, DollarSign, ChevronRight, AlertCircle } from 'lucide-react';
-import { bookingAPI } from '../api';
+import { Calendar, Clock, MapPin, Star, Phone, Award, DollarSign, ChevronRight, AlertCircle } from 'lucide-react';
+import { bookingAPI, getApiErrorMessage } from '../api';
 
 const cardClass = 'rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-6 shadow-soft';
 
@@ -9,6 +9,8 @@ const Bookings = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState('find-doctors');
   const [doctors, setDoctors] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({ city: '', specialization: '' });
@@ -21,6 +23,8 @@ const Bookings = ({ user, onLogout }) => {
   const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
+    setError('');
+    setSuccess('');
     if (activeTab === 'find-doctors') {
       fetchDoctors();
     } else if (activeTab === 'my-appointments') {
@@ -30,11 +34,12 @@ const Bookings = ({ user, onLogout }) => {
 
   const fetchDoctors = async () => {
     setLoading(true);
+    setError('');
     try {
       const response = await bookingAPI.getDoctors(filters.city, filters.specialization);
       setDoctors(response.data.doctors);
-    } catch (error) {
-      console.error('Failed to fetch doctors:', error);
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Failed to load doctors. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -42,11 +47,12 @@ const Bookings = ({ user, onLogout }) => {
 
   const fetchAppointments = async () => {
     setLoading(true);
+    setError('');
     try {
       const response = await bookingAPI.getAppointments();
       setAppointments(response.data.appointments);
-    } catch (error) {
-      console.error('Failed to fetch appointments:', error);
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Failed to load appointments. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -55,6 +61,8 @@ const Bookings = ({ user, onLogout }) => {
   const handleBookAppointment = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
+    setSuccess('');
 
     try {
       await bookingAPI.bookAppointment({
@@ -62,19 +70,25 @@ const Bookings = ({ user, onLogout }) => {
         ...bookingForm
       });
 
-      alert('Appointment booked successfully!');
+      setSuccess('Appointment booked successfully.');
       setShowBookingModal(false);
+      setBookingForm({
+        appointment_date: '',
+        appointment_time: '',
+        symptoms: '',
+        notes: ''
+      });
       setActiveTab('my-appointments');
       fetchAppointments();
-    } catch (error) {
-      alert('Failed to book appointment: ' + (error.response?.data?.error || error.message));
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Failed to book appointment. Please try again.'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancelAppointment = async (appointmentId) => {
-    if (!confirm('Are you sure you want to cancel this appointment?')) return;
+    if (!window.confirm('Are you sure you want to cancel this appointment?')) return;
 
     try {
       await bookingAPI.updateAppointment(appointmentId, {
@@ -82,10 +96,10 @@ const Bookings = ({ user, onLogout }) => {
         cancellation_reason: 'User cancelled'
       });
 
-      alert('Appointment cancelled successfully');
+      setSuccess('Appointment cancelled successfully.');
       fetchAppointments();
-    } catch (error) {
-      alert('Failed to cancel appointment: ' + (error.response?.data?.error || error.message));
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Failed to cancel appointment.'));
     }
   };
 
@@ -108,12 +122,13 @@ const Bookings = ({ user, onLogout }) => {
       scheduled: 'bg-blue-100 text-blue-800',
       completed: 'bg-green-100 text-green-800',
       cancelled: 'bg-red-100 text-red-800',
-      'no-show': 'bg-gray-100 text-gray-800'
+      'no-show': 'bg-gray-100 text-gray-800',
+      no_show: 'bg-gray-100 text-gray-800'
     };
 
     return (
       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${styles[status] || styles.scheduled}`}>
-        {status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')}
+        {status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ').replace('_', ' ')}
       </span>
     );
   };
@@ -125,6 +140,17 @@ const Bookings = ({ user, onLogout }) => {
       title="Doctor Consultations"
       subtitle="Book appointments with specialized neurologists for Parkinson's disease screening and treatment."
     >
+      {error ? (
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-700">
+          {error}
+        </div>
+      ) : null}
+      {success ? (
+        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-700">
+          {success}
+        </div>
+      ) : null}
+
       {/* Tabs */}
       <div className="mb-6 flex gap-2 border-b border-[var(--line)]">
         <button
@@ -175,9 +201,10 @@ const Bookings = ({ user, onLogout }) => {
               </select>
               <button
                 onClick={fetchDoctors}
+                disabled={loading}
                 className="rounded-lg bg-[var(--brand-700)] px-6 py-2 font-semibold text-white hover:bg-[var(--brand-800)]"
               >
-                Search
+                {loading ? 'Searching...' : 'Search'}
               </button>
             </div>
           </div>
@@ -214,7 +241,7 @@ const Bookings = ({ user, onLogout }) => {
                   <div className="mb-4 space-y-2 text-sm text-[var(--ink-700)]">
                     <div className="flex items-center gap-2">
                       <Award className="h-4 w-4 text-[var(--brand-700)]" />
-                      <span>{doctor.qualification} • {doctor.experience_years} years exp</span>
+                      <span>{doctor.qualification} - {doctor.experience_years} years exp</span>
                     </div>
                     {doctor.hospital_affiliation && (
                       <div className="flex items-center gap-2">
@@ -228,7 +255,7 @@ const Bookings = ({ user, onLogout }) => {
                     </div>
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-4 w-4 text-[var(--brand-700)]" />
-                      <span className="font-semibold">₹{doctor.consultation_fee} consultation fee</span>
+                      <span className="font-semibold">INR {doctor.consultation_fee} consultation fee</span>
                     </div>
                   </div>
 
@@ -302,7 +329,7 @@ const Bookings = ({ user, onLogout }) => {
                     )}
                     <div className="flex items-center gap-2 text-sm">
                       <DollarSign className="h-4 w-4 text-[var(--brand-700)]" />
-                      <span>₹{appointment.consultation_fee}</span>
+                      <span>INR {appointment.consultation_fee}</span>
                     </div>
                   </div>
 

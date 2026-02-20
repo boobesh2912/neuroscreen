@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Download, Plus, UserRound, Users, X } from 'lucide-react';
+import { Download, Loader2, Plus, UserRound, Users, X } from 'lucide-react';
 import AppShell from './AppShell';
-import { profileAPI } from '../api';
+import { getApiErrorMessage, profileAPI } from '../api';
 
 const panelClass = 'rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-5 shadow-soft';
 
@@ -18,6 +18,7 @@ const Profile = ({ user, onLogout }) => {
   const [contacts, setContacts] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loadingContacts, setLoadingContacts] = useState(true);
+  const [savingContact, setSavingContact] = useState(false);
   const [contactForm, setContactForm] = useState(emptyContact);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -31,8 +32,8 @@ const Profile = ({ user, onLogout }) => {
       ]);
       if (profileRes?.data?.user) setProfile((p) => ({ ...p, ...profileRes.data.user }));
       setContacts(contactsRes?.data?.contacts || []);
-    } catch {
-      setError('Failed to load profile data. Please refresh.');
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Failed to load profile data. Please refresh.'));
     } finally {
       setLoadingContacts(false);
     }
@@ -54,6 +55,7 @@ const Profile = ({ user, onLogout }) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setSavingContact(true);
     try {
       await profileAPI.addEmergencyContact(contactForm);
       setSuccess('Emergency contact added successfully.');
@@ -61,7 +63,9 @@ const Profile = ({ user, onLogout }) => {
       setShowForm(false);
       loadData();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to add emergency contact.');
+      setError(getApiErrorMessage(err, 'Failed to add emergency contact.'));
+    } finally {
+      setSavingContact(false);
     }
   };
 
@@ -132,8 +136,13 @@ const Profile = ({ user, onLogout }) => {
                 Set as primary contact
               </label>
               <div>
-                <button className="mt-3 rounded-full bg-[var(--brand-700)] px-4 py-2 text-sm font-semibold text-white" type="submit">
-                  Save Contact
+                <button
+                  className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--brand-700)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                  type="submit"
+                  disabled={savingContact}
+                >
+                  {savingContact ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  {savingContact ? 'Saving...' : 'Save Contact'}
                 </button>
               </div>
             </form>
@@ -168,13 +177,17 @@ const Profile = ({ user, onLogout }) => {
 
         <section className={panelClass}>
           <h2 className="font-display text-xl font-bold text-[var(--ink-900)]">Report Export</h2>
-          <p className="mt-2 text-sm text-[var(--ink-700)]">Generate a summary PDF of voice screenings and risk trends for clinician review.</p>
+          <p className="mt-2 text-sm text-[var(--ink-700)]">
+            Generate a summary PDF of voice screenings and risk trends for clinician review.
+          </p>
           <button
-            onClick={() => alert('PDF export endpoint is not implemented yet in backend.')}
-            className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-semibold"
+            disabled
+            className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-semibold opacity-70"
+            aria-disabled="true"
+            title="Export will be enabled in a backend release."
           >
             <Download className="h-4 w-4" />
-            Export Report
+            Export Report (Coming Soon)
           </button>
         </section>
       </div>

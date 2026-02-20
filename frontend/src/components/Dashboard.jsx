@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, Clock3, AlertTriangle, Mic, CheckCircle2, RefreshCcw } from 'lucide-react';
 import AppShell from './AppShell';
-import { dashboardAPI } from '../api';
+import { dashboardAPI, getApiErrorMessage } from '../api';
 
 function riskMeta(score) {
   if (score < 30) return { label: 'Low', tone: 'text-emerald-700', bg: 'bg-emerald-500' };
@@ -24,8 +24,8 @@ const Dashboard = ({ user, onLogout }) => {
     try {
       const response = await dashboardAPI.getDashboard();
       setDashboardData(response.data);
-    } catch {
-      setError('Unable to load dashboard data. Please try again.');
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Unable to load dashboard data. Please try again.'));
     } finally {
       setLoading(false);
     }
