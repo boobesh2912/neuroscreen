@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 240">
+  <defs>
+    <linearGradient id="brand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f8f6a" />
+      <stop offset="100%" stop-color="#0b6f53" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="860" height="240" rx="28" fill="#f2f6f5" />
+  <rect x="28" y="28" width="184" height="184" rx="26" fill="url(#brand)" />
+  <path
+    d="M63 177V62h24l16 26 16-26h24v115h-20V116l-20 30-20-30v61H63z"
+    fill="#ffffff"
+  />
+  <text
+    x="250"
+    y="132"
+    font-family="Space Grotesk, Manrope, Arial, sans-serif"
+    font-size="68"
+    font-weight="700"
+    fill="#10221f"
+  >
+    NeuroScreen
+  </text>
+  <text
+    x="252"
+    y="172"
+    font-family="Manrope, Arial, sans-serif"
+    font-size="24"
+    font-weight="500"
+    fill="#2a4743"
+  >
+    Voice-Based Neurological Screening Platform
+  </text>
+</svg>
