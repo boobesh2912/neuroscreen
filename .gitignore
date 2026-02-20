@@ -18,9 +18,17 @@ frontend/dist/
 Thumbs.db
 
 # Runtime/temp
-temp/uploads/
+backend/temp/*.png
+backend/temp/*.json
+backend/temp/*.pkl
+backend/temp/uploads/*
+!backend/temp/.gitkeep
+!backend/temp/uploads/.gitkeep
+backend/database/mediguardian.db
 *.log
 
 # Local env
 .env
 .env.*
+!backend/.env.example
+!frontend/.env.example
