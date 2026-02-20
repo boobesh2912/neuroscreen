@@ -1,10 +1,14 @@
-# Flask API Requirements
-flask==3.0.0
-flask-cors==4.0.0
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.32,<1.0
+gunicorn>=23.0,<24.0
+pydantic>=2.9,<3.0
+pydantic-settings>=2.6,<3.0
+python-dotenv>=1.0,<2.0
+python-multipart>=0.0.12
 pyjwt==2.8.0
-werkzeug==3.0.1
+psycopg[binary]>=3.2,<3.3
+psycopg-pool>=3.2,<3.3
 
-# Existing ML/Audio Processing Dependencies
 numpy==1.24.3; python_version < "3.12"
 numpy>=2.1,<2.3; python_version >= "3.12"
 pandas==2.0.3; python_version < "3.12"
@@ -15,23 +19,8 @@ scikit-learn>=1.6,<1.8; python_version >= "3.12"
 joblib==1.3.2
 matplotlib==3.7.2; python_version < "3.12"
 matplotlib>=3.9,<3.11; python_version >= "3.12"
-seaborn==0.12.2; python_version < "3.12"
-seaborn>=0.13,<0.14; python_version >= "3.12"
 scipy==1.11.2; python_version < "3.12"
 scipy>=1.14,<1.16; python_version >= "3.12"
-
-# Gradio (optional - can keep for backup)
-gradio==4.14.0; python_version < "3.12"
-gradio>=5.0,<6.0; python_version >= "3.12"
-
-# Database
-# SQLite is built-in to Python, no package needed
-
-# Audio file handling
 soundfile==0.12.1
 audioread==3.0.1
-
-# Additional utilities
-python-dateutil==2.8.2
-# Required by transitive dependencies expecting pkg_resources on Python 3.13
 setuptools<81

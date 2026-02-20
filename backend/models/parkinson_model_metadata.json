@@ -1,0 +1,52 @@
+{
+  "model_type": "rf_svm_soft_voting",
+  "dataset": {
+    "total_samples": 81,
+    "train_samples": 64,
+    "test_samples": 17,
+    "class_distribution": {
+      "healthy": 41,
+      "parkinsons": 40
+    },
+    "sample_rate": 22050
+  },
+  "metrics": {
+    "random_forest": {
+      "accuracy": 0.8235294117647058,
+      "precision": 0.7777777777777778,
+      "recall": 0.875,
+      "f1": 0.8235294117647058,
+      "roc_auc": 0.8055555555555555
+    },
+    "svm": {
+      "accuracy": 0.6470588235294118,
+      "precision": 0.625,
+      "recall": 0.625,
+      "f1": 0.625,
+      "roc_auc": 0.625
+    },
+    "ensemble": {
+      "accuracy": 0.6470588235294118,
+      "precision": 0.625,
+      "recall": 0.625,
+      "f1": 0.625,
+      "roc_auc": 0.7222222222222222
+    }
+  },
+  "selected_model": "random_forest",
+  "features": {
+    "count": 98,
+    "names_file": "feature_names.txt"
+  },
+  "artifacts": {
+    "selected_model": "parkinson_model.pkl",
+    "random_forest_model": "parkinson_rf_model.pkl",
+    "svm_model": "parkinson_svm_model.pkl",
+    "voting_ensemble_model": "parkinson_ensemble_model.pkl",
+    "dataset_csv": "extracted_features.csv",
+    "feature_importance_plot": "feature_importance.png",
+    "confusion_matrix_plot": "confusion_matrix.png",
+    "roc_curve_plot": "roc_curve.png"
+  },
+  "trained_at": "2026-02-20T13:07:52.514339+00:00"
+}
